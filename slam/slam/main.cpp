@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     int startIndex = std::atoi(argv[1]);
     int endIndex = std::atoi(argv[2]);
     */
-    int startIndex = 1;
+    int startIndex = 10;
     int endIndex = 200;
 
     ofstream fout("/home/exbot/catkin_ws/dataset/xyz/odometry.txt",  ios::trunc);
@@ -77,6 +77,7 @@ int main(int argc, char** argv)
         //to do the computer
         Eigen::Vector7d  pos;
         pos = Maching(lastFrame, currentFrame);
+
 
         fout << lastFrame->frameID <<"\t"<<currentFrame->frameID
              << "\t"<< pos(0)<< "\t"<< pos(1)<< "\t"<< pos(2)<< "\t"<< pos(3)
@@ -115,7 +116,13 @@ Eigen::Vector7d Maching(boost::shared_ptr<FRAME> lastFrame, boost::shared_ptr<FR
     std::cout << "good matches size is: " << goodMatches.size() << std::endl;
 
     std::vector<cv::Point3f> obj;
-    projectFeaturesTo3D(lastFrame->kp, lastFrame->depImg, goodMatches, obj );
+    cv::Mat cloneImg;
+    cloneImg = lastFrame->depImg.clone();
+    //cloneImg = lastFrame->depImg;
+
+    projectFeaturesTo3D(lastFrame->kp, cloneImg, goodMatches, obj );
+    //projectFeaturesTo3D(lastFrame->kp, lastFrame->depImg, goodMatches, obj );
+
     std::cout << "after project 3d feature is " << goodMatches.size()  << "obj size: " << obj.size()<< std::endl;
 
     std::vector<cv::Point2f> img;

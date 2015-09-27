@@ -104,13 +104,15 @@ void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint>& featureLocations2d, 
     }
 }
 
-void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint>& keyPoints, cv::Mat& depImage, std::vector<DMatch>& matches, std::vector<cv::Point3f>& obj ) {
+void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint> keyPoints, cv::Mat depImage, std::vector<DMatch>& matches, std::vector<cv::Point3f>& obj ) {
 
     CAMERA_INTRINSIC_PARAMETERS cam ;
     cam = getDefaultCamera();
     //std::cout << "cam:" << cam.cx << "  "<< cam.cy << " " << cam.fx << "  " << cam.fy <<  " " << cam.scale << std::endl;
 
     std::vector<cv::DMatch> goodMatches;
+   // const unsigned short* depthdata = reinterpret_cast<const unsigned short*>( &depImage.data[0] );
+
 
     for (int i = 0; i < matches.size(); i++) {
         std::cout << "kp size: " << keyPoints.size() << "  index:" << matches[i].queryIdx << std::endl;
@@ -121,7 +123,11 @@ void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint>& keyPoints, cv::Mat& 
         std::cout << " u: " << u << " v: " << v  << std::endl;
 
       //  if (std::isnan(depImage.at<unsigned short>(round(u), round(v))))
+       // int ui = round(u);
+       // int vi = round(v);
        //     continue;
+      //  unsigned short d = (unsigned short) *(depthdata +ui*640 + vi);
+
         unsigned short d = depImage.at<unsigned short>(round(u), round(v));
 
         if (std::abs(d)  <  0.001  ||   u <0 || u >= 480 || v < 0 || v >= 480   ) {

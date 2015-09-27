@@ -35,7 +35,7 @@ void pointCloudToImage( const pcl::PointCloud< pcl::PointXYZRGB >::ConstPtr& clo
 void pointCloudToImages( const pcl::PointCloud< pcl::PointXYZRGB >::ConstPtr& cloud, cv::Mat& img_rgb, cv::Mat& img_depth );
 
 void projectFeaturesTo3D( std::vector<cv::KeyPoint>& featureLocations2d, std::vector<Eigen::Vector4f, Eigen::aligned_allocator<Eigen::Vector4f> > & featureLocations3d, const pcl::PointCloud< pcl::PointXYZRGB >::ConstPtr pointCloud );
-void projectFeaturesTo3D (std::vector<cv::KeyPoint>& keyPoints, cv::Mat& depImage, std::vector<DMatch>& matches, std::vector<cv::Point3f> &obj );
+void projectFeaturesTo3D (std::vector<cv::KeyPoint>  keyPoints, cv::Mat  depImage, std::vector<DMatch>& matches, std::vector<cv::Point3f> &obj );
 void restoreCVMatFromPointCloud( pcl::PointCloud< pcl::PointXYZRGB >::ConstPtr cloudIn, cv::Mat& rgbImage);
 void restoreCVMatFromPointCloud( pcl::PointCloud< pcl::PointXYZRGB >::ConstPtr cloudIn, cv::Mat& rgbImage, cv::Mat& depImage);
 PointCloudT::Ptr jointPointCloud( PointCloudT::Ptr orginal, PointCloudT::Ptr target, Eigen::Isometry3d T);
