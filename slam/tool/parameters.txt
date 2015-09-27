@@ -1,0 +1,41 @@
+#debug file
+#rgb1=/home/tomson/catkin_workshop/devel/dataset/rgb_00001.png
+#rgb2=/home/tomson/catkin_workshop/devel/dataset/rgb_00002.png
+#depth1=/home/tomson/catkin_workshop/devel/dataset/depth_00001.png
+#depth2=/home/tomson/catkin_workshop/devel/dataset/depth_00002.png
+rgb1=/home/tomson/data/freiburg/rgbd_dataset_freiburg1_xyz/rgb/1305031102.175304.png
+rgb2=/home/tomson/data/freiburg/rgbd_dataset_freiburg1_xyz/rgb/1305031102.275326.png
+depth1=/home/tomson/data/freiburg/rgbd_dataset_freiburg1_xyz/depth/1305031102.160407.png
+depth2=/home/tomson/data/freiburg/rgbd_dataset_freiburg1_xyz/depth/1305031102.262886.png
+
+#the dataset path
+#datasetpath=/home/exbot/catkin_ws/dataset/desk
+datasetpath=/home/exbot/catkin_ws/dataset/xyz
+
+# part 4 里定义的参数
+detector=SIFT
+descriptor=SIFT
+good_match_threshold=4
+descriptor_matches=FLANN
+#descriptor_matches=BF
+
+# camera
+camera.cx=325.5
+camera.cy=253.5
+camera.fx=518.0
+camera.fy=519.0
+camera.scale=1000.0
+
+
+#Ransac Filter
+RANSAC=0
+#max_dist_for_inliers=0.03
+max_dist_for_inliers=0.1
+ransac_iterations=1000
+minimum_inliers=30;
+ransac_accuracy=8.0
+
+#Plane
+distance_threshold=0.08
+plane_percent=0.2
+max_planes=3
