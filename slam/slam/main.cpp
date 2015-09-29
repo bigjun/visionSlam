@@ -2,7 +2,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
-#include <boost/shared_ptr.hpp>
 #include <Eigen/Eigen>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -26,7 +25,7 @@
 using namespace std;
 using namespace utils;
 
-Eigen::Vector7d Maching(boost::shared_ptr<FRAME> lastFrame, boost::shared_ptr<FRAME>  currentFrame) ;
+Eigen::Vector7d Maching(FRAME &lastFrame, FRAME currentFrame) ;
 
 void  usage() {
     std::cout << "Usage: start_index end_index" << std::endl;
@@ -48,14 +47,14 @@ int main(int argc, char** argv)
     int endIndex = 200;
 
     ofstream fout("/home/exbot/catkin_ws/dataset/xyz/odometry.txt",  ios::trunc);
-
-    boost::shared_ptr<FRAME> lastFrame;
-    boost::shared_ptr<FRAME> currentFrame;
+/*
+    FRAME lastFrame;
+    FRAME currentFrame;
 
     FeatureDection featDection;
-    lastFrame = readFrame(startIndex);
-    imagesToPointCloud(lastFrame->depImg, lastFrame->rgbImg, " ", lastFrame->cloud);
-    int kpSize = featDection.computeKeyPointsAndDesp(lastFrame->rgbImg, lastFrame->kp, lastFrame->desp);
+    readFrame(startIndex, lastFrame);
+    imagesToPointCloud(lastFrame.depImg, lastFrame.rgbImg, " ", lastFrame.cloud);
+    int kpSize = featDection.computeKeyPointsAndDesp(lastFrame.rgbImg, lastFrame.kp, lastFrame.desp);
     if (kpSize < 10) {
 
         std::cout << "the frame id %d  key points size is : %d, too little!\n" << startIndex << kpSize;
@@ -64,9 +63,9 @@ int main(int argc, char** argv)
 
     for (int index = startIndex +3; index < endIndex;  index = index+3) {
 
-        currentFrame = readFrame (index);
-        imagesToPointCloud(currentFrame->depImg, currentFrame->rgbImg, " ", currentFrame->cloud);
-        int kpSize = featDection.computeKeyPointsAndDesp(currentFrame ->rgbImg, currentFrame ->kp, currentFrame ->desp);
+        readFrame (index, currentFrame);
+        imagesToPointCloud(currentFrame.depImg, currentFrame.rgbImg, " ", currentFrame.cloud);
+        int kpSize = featDection.computeKeyPointsAndDesp(currentFrame.rgbImg, currentFrame.kp, currentFrame.desp);
         if (kpSize < 10) {
 
             std::cout << "the frame id %d  key points size is : %d, too little!\n" << startIndex << kpSize;
@@ -79,7 +78,7 @@ int main(int argc, char** argv)
         pos = Maching(lastFrame, currentFrame);
 
 
-        fout << lastFrame->frameID <<"\t"<<currentFrame->frameID
+        fout << lastFrame.frameID <<"\t"<<currentFrame.frameID
              << "\t"<< pos(0)<< "\t"<< pos(1)<< "\t"<< pos(2)<< "\t"<< pos(3)
              << "\t"<< pos(4)<< "\t"<< pos(5)<< "\t"<< pos(6) << std::endl;
 
@@ -92,7 +91,7 @@ int main(int argc, char** argv)
     //    cv::waitKey(1000);
 
     }
-
+*/
     fout.close();
 
     return 0;
@@ -100,15 +99,15 @@ int main(int argc, char** argv)
 }
 
 
-Eigen::Vector7d Maching(boost::shared_ptr<FRAME> lastFrame, boost::shared_ptr<FRAME>  currentFrame) {
+Eigen::Vector7d Maching(FRAME &lastFrame, FRAME currentFrame) {
 
     std::vector<cv::DMatch> matches;
     FeatureMatcher featMathcher;
-    featMathcher.setSourceImage(lastFrame->rgbImg);
-    featMathcher.setSourceKeypoints(lastFrame->kp);
-    featMathcher.setTargetImage(currentFrame->rgbImg);
-    featMathcher.setTargetKeypoints(currentFrame->kp);
-    featMathcher.findMatches(lastFrame->desp, currentFrame->desp, matches);
+    featMathcher.setSourceImage(lastFrame.rgbImg);
+    featMathcher.setSourceKeypoints(lastFrame.kp);
+    featMathcher.setTargetImage(currentFrame.rgbImg);
+    featMathcher.setTargetKeypoints(currentFrame.kp);
+    featMathcher.findMatches(lastFrame.desp, currentFrame.desp, matches);
     std::cout << "raw matches size is: " << matches.size() << std::endl;
 
     std::vector<cv::DMatch> goodMatches;
@@ -117,10 +116,10 @@ Eigen::Vector7d Maching(boost::shared_ptr<FRAME> lastFrame, boost::shared_ptr<FR
 
     std::vector<cv::Point3f> obj;
     cv::Mat cloneImg;
-    cloneImg = lastFrame->depImg.clone();
+    cloneImg = lastFrame.depImg.clone();
     //cloneImg = lastFrame->depImg;
 
-    projectFeaturesTo3D(lastFrame->kp, cloneImg, goodMatches, obj );
+    projectFeaturesTo3D(lastFrame.kp, cloneImg, goodMatches, obj );
     //projectFeaturesTo3D(lastFrame->kp, lastFrame->depImg, goodMatches, obj );
 
     std::cout << "after project 3d feature is " << goodMatches.size()  << "obj size: " << obj.size()<< std::endl;
@@ -128,7 +127,7 @@ Eigen::Vector7d Maching(boost::shared_ptr<FRAME> lastFrame, boost::shared_ptr<FR
     std::vector<cv::Point2f> img;
     for (int i = 0 ; i < goodMatches.size(); i++) {
         int idx = goodMatches[i].trainIdx;
-        cv::Point pt = currentFrame->kp[idx].pt;
+        cv::Point pt = currentFrame.kp[idx].pt;
         img.push_back(pt);
     }
 

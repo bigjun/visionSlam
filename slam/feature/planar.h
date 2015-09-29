@@ -35,7 +35,7 @@ typedef boost::shared_ptr<PLANE> PlanePtr;
 class Planar {
 public:
     std::vector < PlanePtr > extractPlanes(PointCloudT::Ptr& cloud, cv::Mat& rgb, cv::Mat& dep);
-    Eigen::Isometry3d MatchingPlanar(FramePtr&  lastFrame, FramePtr& currentFrame);
+    Eigen::Isometry3d MatchingPlanar(FRAME&  lastFrame, FRAME& currentFrame);
 
 
 private:

@@ -120,7 +120,7 @@ void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint> keyPoints, cv::Mat de
 
         double u = kp.pt.x;
         double v = kp.pt.y;
-        std::cout << " u: " << u << " v: " << v  << std::endl;
+   //    std::cout << " u: " << u << " v: " << v  << std::endl;
 
       //  if (std::isnan(depImage.at<unsigned short>(round(u), round(v))))
        // int ui = round(u);
@@ -140,7 +140,7 @@ void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint> keyPoints, cv::Mat de
         double y = (v - cam.cy) * z / cam.fy;
         obj.push_back(cv::Point3f(x, y, z));
         goodMatches.push_back(matches[i]);
-        std::cout << "                                   x: " << x << " y: " << y << " z: " << z << std::endl;
+    //    std::cout << "                                   x: " << x << " y: " << y << " z: " << z << std::endl;
     }
 
     matches.clear();

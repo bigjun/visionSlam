@@ -26,13 +26,30 @@ int SlamEnd::addVertex( int index, bool setFixed) {
 
 
  int  SlamEnd::addEdge(int index1, int index2, Eigen::Isometry3d measure, Eigen::Matrix<double, 6, 6> information) {
-
+    //边
      g2o::EdgeSE3* edge = new g2o::EdgeSE3();
+     // 连接此边的两个定点
      edge->vertices()[0] = _globalOptimizer.vertex(index1);
      edge->vertices()[1] = _globalOptimizer.vertex(index2);
+     //信息矩阵
      edge->setInformation(information);
+     //观测值
      edge->setMeasurement(measure);
      edge->setRobustKernel(_robustKernel);
+     //把此边加入地图
      _globalOptimizer.addEdge(edge);
+
+ }
+
+
+ void SlamEnd::checkNearbyLoops(std::vector<FRAME>& frames, FRAME frame){
+
+ }
+
+ void SlamEnd::checkRandomLoops(std::vector<FRAME>& frames, FRAME frame) {
+
+ }
+
+ CHECK_RESULT SlamEnd::checkKeyframes(FRAME& f1, FRAME& f2) {
 
  }

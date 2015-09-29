@@ -175,10 +175,10 @@ std::vector <boost::shared_ptr<PLANE> >  Planar::extractPlanes(PointCloudT::Ptr&
  }
 
 
- Eigen::Isometry3d Planar::MatchingPlanar(FramePtr&  lastFrame, FramePtr& currentFrame) {
+ Eigen::Isometry3d Planar::MatchingPlanar(FRAME&  lastFrame, FRAME& currentFrame) {
 
-     std::vector<PlanePtr> p1 =extractPlanes(lastFrame->cloud, lastFrame->rgbImg, lastFrame->depImg);
-     std::vector<PlanePtr> p2 =extractPlanes(currentFrame->cloud, currentFrame->rgbImg, currentFrame->depImg);
+     std::vector<PlanePtr> p1 =extractPlanes(lastFrame.cloud, lastFrame.rgbImg, lastFrame.depImg);
+     std::vector<PlanePtr> p2 =extractPlanes(currentFrame.cloud, currentFrame.rgbImg, currentFrame.depImg);
 
      FeatureDection featDection;
 
@@ -186,13 +186,13 @@ std::vector <boost::shared_ptr<PLANE> >  Planar::extractPlanes(PointCloudT::Ptr&
     for (size_t i = 0; i < p1.size(); i++) {
         despSize = featDection.computeKeyPointsAndDesp(p1[i]->image,  p1[i]->kp, p1[i]->desp);
         std::cout << "i: " << i << " despSize:  "  << despSize << std::endl;
-        compute3dPosition(p1[i], lastFrame->depImg);
+        compute3dPosition(p1[i], lastFrame.depImg);
     }
 
     for (size_t i = 0; i < p2.size(); i++) {
         despSize = featDection.computeKeyPointsAndDesp(p2[i]->image,  p2[i]->kp, p2[i]->desp);
         std::cout << "i: " << i << " despSize:  "  <<despSize << std::endl;
-        compute3dPosition(p2[i], currentFrame->depImg);
+        compute3dPosition(p2[i], currentFrame.depImg);
     }
 
     std::vector<cv::DMatch> matches = match(p1,p2);
@@ -246,7 +246,7 @@ std::vector <boost::shared_ptr<PLANE> >  Planar::extractPlanes(PointCloudT::Ptr&
     //For Debug
      if ( DEBUG_INFO ) {
          cv::Mat matchImg;
-         cv::drawMatches(lastFrame->rgbImg, kp1, currentFrame->rgbImg, kp2, inlierMatches, matchImg );
+         cv::drawMatches(lastFrame.rgbImg, kp1, currentFrame.rgbImg, kp2, inlierMatches, matchImg );
          cv::imshow("matches" , matchImg);
          cv::waitKey();
      }

@@ -561,6 +561,15 @@ static inline void jacobianWrtPose( const Pose & pose, const Eigen::Vector4d & p
       transform = translation * rotation;
     }
   };
+
+ class far{
+	 public:
+	 static void transformToFar(const Eigen::Matrix4d & transform  double &  angle , double & dist ) {
+		angle = Eigen::AngleAxisd( transform.block<3,3>(0,0) ).angle();
+		dist = transform.block<3,1>(0,3).norm();
+	 }
+	 };
+	 
 }
 
 #endif

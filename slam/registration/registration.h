@@ -24,5 +24,5 @@ struct FRAME {
 
 typedef boost::shared_ptr<FRAME>  FramePtr;
 
-boost::shared_ptr<FRAME>  readFrame(int index);
+void readFrame(int index, FRAME& frame);
 #endif
