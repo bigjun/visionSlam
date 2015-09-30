@@ -19,21 +19,24 @@
 #include "../feature/feature_detection.h"
 #include  "../feature/feature_matcher.h"
 #include "../tool/eigen_extensions.h"
+#include "slamEnd.h"
 
 // -DCMAKE_BUILD_TYPE=Debug
 
 using namespace std;
 using namespace utils;
 
-Eigen::Vector7d Maching(FRAME &lastFrame, FRAME currentFrame) ;
+//Eigen::Vector7d Maching(FRAME &lastFrame, FRAME currentFrame) ;
 
 void  usage() {
     std::cout << "Usage: start_index end_index" << std::endl;
 }
 
+
+
 int main(int argc, char** argv)
 {
-    /*
+/*
     if (argc != 3) {
         usage();
         return -1;
@@ -43,11 +46,18 @@ int main(int argc, char** argv)
     int startIndex = std::atoi(argv[1]);
     int endIndex = std::atoi(argv[2]);
     */
-    int startIndex = 10;
-    int endIndex = 200;
+    int startIndex = 1;
+    int endIndex = 500;
+    std::vector<FRAME> keyFrame;
+    ParameterReader pd;
+    int check_loop_closure, nearby_loops, random_loops;
+    pd.get( "check_loop_closure", check_loop_closure );
+    pd.get( "nearby_loops", nearby_loops );
+    pd.get( "random_loops", random_loops );
 
-    ofstream fout("/home/exbot/catkin_ws/dataset/xyz/odometry.txt",  ios::trunc);
-/*
+
+    //ofstream fout("/home/exbot/catkin_ws/dataset/xyz/odometry.txt",  ios::trunc);
+
     FRAME lastFrame;
     FRAME currentFrame;
 
@@ -61,18 +71,50 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    for (int index = startIndex +3; index < endIndex;  index = index+3) {
+    /*初始化g2o*/
+    SlamEnd slamEnd;
+    slamEnd.addVertex( lastFrame.frameID, true);
+    keyFrame.push_back(lastFrame);
+
+
+
+    for (int index = startIndex +1; index < endIndex;  index ++) {
 
         readFrame (index, currentFrame);
         imagesToPointCloud(currentFrame.depImg, currentFrame.rgbImg, " ", currentFrame.cloud);
         int kpSize = featDection.computeKeyPointsAndDesp(currentFrame.rgbImg, currentFrame.kp, currentFrame.desp);
         if (kpSize < 10) {
-
             std::cout << "the frame id %d  key points size is : %d, too little!\n" << startIndex << kpSize;
             return -1;
         }
 
+        CHECK_RESULT result = slamEnd.checkKeyframes(keyFrame.back(), currentFrame);
+        switch (result ) {
+        case NOT_MATCHED:
+                std::cout << "Not enough linliers." << std::endl;
+                break;
+        case TOO_FAR_AWAY:
+                std::cout << "Too far away, may be an error" << std::endl;
+                break;
+        case TOO_CLOSE:
+                std::cout<< "This is too close" << std::endl;
+                break;
+        case KEYFRAME:
+                std::cout << " This is  a new keyframe " << std::endl;
+                if ( check_loop_closure ) {
+                    slamEnd.checkNearbyLoops(keyFrame, currentFrame);
+                    slamEnd.checkRandomLoops(keyFrame, currentFrame);
+                }
+                keyFrame.push_back(currentFrame);
+                break;
+        default:
+            break;
+        }
 
+
+
+
+        /*
         //to do the computer
         Eigen::Vector7d  pos;
         pos = Maching(lastFrame, currentFrame);
@@ -84,21 +126,28 @@ int main(int argc, char** argv)
 
 
 
+*/
 
-
-        lastFrame =currentFrame;
+   //     lastFrame =currentFrame;
       //  cv::imshow("rgb", lastFrame->rgbImg);
     //    cv::waitKey(1000);
 
     }
-*/
-    fout.close();
+
+        std::string before = "result_before.g2o";
+        std::string after = "result_after.g2o";
+        slamEnd.save(before);
+        slamEnd.optimize(100);
+        slamEnd.save(after);
+        slamEnd.clear();
+
+    //fout.close();
 
     return 0;
 
 }
 
-
+/*
 Eigen::Vector7d Maching(FRAME &lastFrame, FRAME currentFrame) {
 
     std::vector<cv::DMatch> matches;
@@ -171,3 +220,4 @@ Eigen::Vector7d Maching(FRAME &lastFrame, FRAME currentFrame) {
     return pos;
 
 }
+*/

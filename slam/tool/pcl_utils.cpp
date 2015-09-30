@@ -115,19 +115,10 @@ void utils::projectFeaturesTo3D (std::vector<cv::KeyPoint> keyPoints, cv::Mat de
 
 
     for (int i = 0; i < matches.size(); i++) {
-        std::cout << "kp size: " << keyPoints.size() << "  index:" << matches[i].queryIdx << std::endl;
         cv::KeyPoint kp = keyPoints [matches[i].queryIdx];
 
         double u = kp.pt.x;
         double v = kp.pt.y;
-   //    std::cout << " u: " << u << " v: " << v  << std::endl;
-
-      //  if (std::isnan(depImage.at<unsigned short>(round(u), round(v))))
-       // int ui = round(u);
-       // int vi = round(v);
-       //     continue;
-      //  unsigned short d = (unsigned short) *(depthdata +ui*640 + vi);
-
         unsigned short d = depImage.at<unsigned short>(round(u), round(v));
 
         if (std::abs(d)  <  0.001  ||   u <0 || u >= 480 || v < 0 || v >= 480   ) {

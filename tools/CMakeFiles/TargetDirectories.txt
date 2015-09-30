@@ -1,3 +1,0 @@
-/home/exbot/catkin_ws/src/tools/CMakeFiles/feature.dir
-/home/exbot/catkin_ws/src/tools/CMakeFiles/imgToPointCloud.dir
-/home/exbot/catkin_ws/src/tools/CMakeFiles/utilities.dir

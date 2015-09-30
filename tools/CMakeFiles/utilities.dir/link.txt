@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC   -Wno-deprecated -g    -shared -Wl,-soname,libutilities.so -o libutilities.so CMakeFiles/utilities.dir/src/utilities/utilities.cpp.o 

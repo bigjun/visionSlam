@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(slam)
-
-#set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "set build type to debug")
 # -DCMAKE_BUILD_TYPE=Debug/Release
 
-add_definitions( -std=c++0x )
-#set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
-#set(CMAKE_MODULE_PATH "/home/exbot/catkin_ws/src/slam/cmake/Modules/" ${CMAKE_MODULE_PATH})
+set(CMAKE_BUILD_TYPE Debug CACHE STRING "set build type to debug")
+#add_definitions( -std=c++0x )
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 list(APPEND CMAKE_MODULE_PATH $${PROJECT_SOURCE_DIR}/cmake)
 
 
@@ -70,18 +67,18 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 message("${OpenCV_INCLUDE_DIRS}")
 
 # G2O required
-#find_package(G2O REQUIRED)
+find_package(G2O REQUIRED)
 #include_directories(${G2O_INCLUDE_DIR})
-#include_directories("/opt/ros/indigo/include")
+include_directories("/opt/ros/indigo/include")
 
 # For building the CHOLMOD / CSPARSE solvers
 find_package(Cholmod)
 find_package(BLAS)
 find_package(LAPACK)
-#find_package(CSparse)
+find_package(CSparse)
 find_package(Qt4 REQUIRED)
-#include_directories(${CSPARSE_INCLUDE_DIR})
-include_directories("/usr/include/suitesparse")
+include_directories(${CSPARSE_INCLUDE_DIR})
+#include_directories("/usr/include/suitesparse")
 
 #Boost
 #find_package( Boost 1.40 COMPONENTS program_options REQUIRED )
@@ -89,13 +86,13 @@ find_package( Boost 1.40  REQUIRED)
 include_directories( ${Boost_INCLUDE_DIR} )
 
 #catkin
-find_package(catkin REQUIRED COMPONENTS roscpp rosconsole pcl_ros pcl_msgs pcl_conversions  cv_bridge sensor_msgs genmsg tf_conversions eigen_conversions image_geometry  )
-catkin_package(
+find_package(catkin REQUIRED COMPONENTS roscpp rosconsole pcl_ros pcl_msgs pcl_conversions  cv_bridge sensor_msgs genmsg tf_conversions eigen_conversions image_geometry)
+#catkin_package(
  # INCLUDE_DIRS include
 #  LIBRARIES rosmrsmap
-  CATKIN_DEPENDS cv_bridge pcl_ros pcl_conversions roscpp sensor_msgs rospy tf_conversions eigen_conversions
-  DEPENDS system_lib std_msgs
-)
+#  CATKIN_DEPENDS cv_bridge pcl_ros pcl_conversions roscpp sensor_msgs rospy tf_conversions eigen_conversions
+#  DEPENDS system_lib std_msgs
+#)
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
@@ -109,19 +106,9 @@ include_directories(
 #include_directories("/usr/include/openni")
 #include_directories("/usr/include")
 include_directories(${PROJECT_SOURCE_DIR}/src/slam)
-#include_directories(${PROJECT_SOURCE_DIR}
-#link_directories("/usr/lib")
 #==================
 # libraries
 #==================
-
-#SET(G2O_LIBS    g2o_cli g2o_solver_eigen g2o_core g2o_solver_pcg
-#                g2o_csparse_extension g2o_solver_slam2d_linear g2o_ext_freeglut_minimal
-#                g2o_solver_structure_only g2o_incremental g2o_stuff g2o_interactive g2o_types_data
-#                g2o_interface  g2o_types_icp g2o_opengl_helper g2o_types_sba g2o_parser   g2o_types_sclam2d
-#                g2o_simulator  g2o_types_sim3 g2o_solver_cholmod g2o_types_slam2d g2o_solver_csparse
-#                g2o_types_slam3d g2o_solver_dense)
-
 
 
 set(SRC_ADDLIB  tool/pcl_utils.cpp
@@ -130,8 +117,8 @@ set(SRC_ADDLIB  tool/pcl_utils.cpp
                 registration/registration.cpp
                 feature/feature_detection.cpp
                 feature/feature_matcher.cpp
-                feature/planar.cpp)
-                #slam/slamEnd.cpp)
+                feature/planar.cpp
+                slam/slamEnd.cpp)
 
 
 
@@ -157,23 +144,16 @@ add_executable( extractPlane  slam/extractPlane.cpp )
 # library link
 #==================
 link_directories("/opt/ros/indigo/lib")
-#target_link_libraries(slamlibs
-#                    ${Boost_PROGRAM_OPTIONS_LIBRARY}
-#                    ${PCL_LIBRARIES}
-#                    ${OpenCV_LIBS}
-#                    ${catkin_LIBRARIES}
-#                    libg2o_core)
-
 target_link_libraries(slamlibs
                     ${Boost_PROGRAM_OPTIONS_LIBRARY}
                     ${PCL_LIBRARIES}
                     ${OpenCV_LIBS}
-                    ${catkin_LIBRARIES})
-#                    ${G2O_CORE_LIBRARY}
-#                    ${G2O_STUFF_LIBRARY}
-#                    ${G2O_SOLVER_CSPARSE}
-#                    ${G2O_SOLVER_CSPARSE_EXTENSION}
-#                    ${G2O_TYPES_SLAM3D})
+                    ${catkin_LIBRARIES}
+                    ${G2O_CORE_LIBRARY}
+                    ${G2O_STUFF_LIBRARY}
+                    ${G2O_SOLVER_CSPARSE}
+                    ${G2O_SOLVER_CSPARSE_EXTENSION}
+                    ${G2O_TYPES_SLAM3D})
 
 
 target_link_libraries(slam_test
@@ -183,5 +163,3 @@ target_link_libraries(planeRegister
 target_link_libraries(extractPlane
                         slamlibs )
 
-#target_link_libraries( imgToPointCloud utilities ${Boost_PROGRAM_OPTIONS_LIBRARY} ${PCL_LIBRARIES} ${OpenCV_LIBS} )
-#target_link_libraries( feature utilities ${Boost_PROGRAM_OPTIONS_LIBRARY} ${PCL_LIBRARIES} ${OpenCV_LIBS} )

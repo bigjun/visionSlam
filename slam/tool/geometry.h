@@ -7,7 +7,7 @@
 #include <Eigen/Eigen>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include <mrsmap/utilities/eigen_extensions.h>
+#include "eigen_extensions.h"
 
 namespace Geometry {
 
@@ -562,13 +562,13 @@ static inline void jacobianWrtPose( const Pose & pose, const Eigen::Vector4d & p
     }
   };
 
- class far{
-	 public:
-	 static void transformToFar(const Eigen::Matrix4d & transform  double &  angle , double & dist ) {
+  //Added by Bigjun 2015-09-28
+
+     static void transformToFar(const Eigen::Matrix4d & transform , double &  angle , double & dist ) {
 		angle = Eigen::AngleAxisd( transform.block<3,3>(0,0) ).angle();
 		dist = transform.block<3,1>(0,3).norm();
-	 }
-	 };
+         }
+
 	 
 }
 
